@@ -1,4 +1,4 @@
-package sv.edu.ues.fia.eisi.uesrunning.ui.slideshow;
+package sv.edu.ues.fia.eisi.uesrunning.ui.temporizador;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import sv.edu.ues.fia.eisi.uesrunning.databinding.FragmentSlideshowBinding;
+import sv.edu.ues.fia.eisi.uesrunning.databinding.FragmentTemporizadorBinding;
 
-public class SlideshowFragment extends Fragment {
+public class TemporizadorFragment extends Fragment {
 
-    private FragmentSlideshowBinding binding;
+    private FragmentTemporizadorBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        SlideshowViewModel slideshowViewModel =
-                new ViewModelProvider(this).get(SlideshowViewModel.class);
+        TemporizadorViewModel temporizadorViewModel =
+                new ViewModelProvider(this).get(TemporizadorViewModel.class);
 
-        binding = FragmentSlideshowBinding.inflate(inflater, container, false);
+        binding = FragmentTemporizadorBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textSlideshow;
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        temporizadorViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

@@ -1,16 +1,16 @@
-package sv.edu.ues.fia.eisi.uesrunning.ui.slideshow;
+package sv.edu.ues.fia.eisi.uesrunning.ui.temporizador;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SlideshowViewModel extends ViewModel {
+public class TemporizadorViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public SlideshowViewModel() {
+    public TemporizadorViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("Este es el temporizador");
     }
 
     public LiveData<String> getText() {
