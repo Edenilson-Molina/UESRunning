@@ -1,32 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/id_fragment_galeria"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GaleriaFragment">
+    tools:context=".ui.misdatos.GaleriaFragment">
 
-    <LinearLayout
-        android:id="@+id/id_linear_galery1"
-        android:layout_width="409dp"
-        android:layout_height="729dp"
-        android:orientation="horizontal"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp"
-        tools:ignore="MissingConstraints">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/button"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:translationY="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="244dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="¿Quieres tomar una foto de tu entrenamiento?" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/boton_tomar_foto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Tomar foto"
+                android:translationX="-20dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_image_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Button" />
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView" />
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/foto_entrenamiento"
+                android:layout_width="234dp"
+                android:layout_height="273dp"
+                tools:src="@tools:sample/avatars" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
