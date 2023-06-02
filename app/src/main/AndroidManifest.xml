@@ -12,23 +12,23 @@
         android:theme="@style/Theme.UESRunning"
         tools:targetApi="31">
         <activity
-            android:name=".RunningScreen"
-            android:exported="true" >
+            android:name=".GaleriaActivity"
+            android:exported="false" />
 
+        <activity
+            android:name=".RunningScreen"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.UESRunning.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.UESRunning.NoActionBar" />
     </application>
 
 </manifest>
