@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 if (isGranted) {
                     Toast.makeText(requireContext(), "Permisos Concedidos", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(requireContext(), "Permisos Denegados", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Permisos Denegados, las características están desabilitadas si se rechazan los permisos", Toast.LENGTH_LONG).show();
                 }
             });
 
