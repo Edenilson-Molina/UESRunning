@@ -48,9 +48,8 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-
+        //Lanzador de permiso de actividad física
         requestPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION);
-        requestPermissionLauncher.launch(Manifest.permission.CAMERA);
 
         // Disparar el layout de home
         View view = inflater.inflate(R.layout.fragment_home, container, false);
