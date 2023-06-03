@@ -27,4 +27,10 @@
         android:name="sv.edu.ues.fia.eisi.uesrunning.ui.misdatos.MisDatosFragment"
         android:label="@string/menu_misdatos"
         tools:layout="@layout/fragment_mis_datos" />
+
+    <fragment
+        android:id="@+id/nav_map2"
+        android:name="sv.edu.ues.fia.eisi.uesrunning.ui.map.MapFragment"
+        android:label="@string/map"
+        tools:layout="@layout/fragment_map" />
 </navigation>
