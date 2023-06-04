@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    
+
+    <!-- PARA EL SENSOR DE PASOS (Y RELACIONADOS) -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <!-- PARA LA CAMARA -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
+    <!-- PARA EL SPEECH -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- PARA LAS NOTIFICACIONES Y EL PERMITIR VIBRAR -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+
 
     <application
         android:allowBackup="true"

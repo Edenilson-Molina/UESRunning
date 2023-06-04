@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#040613"
     android:gravity="center"
     tools:context=".ui.home.HomeFragment">
 
@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">
+
         <com.mikhaellopez.circularprogressbar.CircularProgressBar
             android:id="@+id/progress_circular"
             android:layout_width="200dp"
@@ -20,16 +21,16 @@
             app:cpb_background_progressbar_color="#F2F2F2"
             app:cpb_background_progressbar_width="20dp"
             app:cpb_progressbar_color="#F44336"
-            app:cpb_progressbar_width="15dp"
-            app:cpb_round_border="true" />
+            app:cpb_progressbar_width="15dp" />
 
         <TextView
             android:id="@+id/step_counter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             android:layout_centerInParent="true"
+            android:gravity="center"
             android:text="0"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="40sp" />
     </RelativeLayout>
 
@@ -38,8 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Desactivar"
-         />
+        android:text="@string/activar_sensor_pasos" />
 
 
 </RelativeLayout>
