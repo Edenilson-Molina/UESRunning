@@ -13,13 +13,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"
-            tools:layout_editor_absoluteX="31dp"
-            tools:layout_editor_absoluteY="40dp" />
-
         <CalendarView
             android:id="@+id/calendarView"
             android:layout_width="wrap_content"

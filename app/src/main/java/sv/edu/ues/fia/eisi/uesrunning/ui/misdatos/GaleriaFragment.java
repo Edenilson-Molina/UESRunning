@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -18,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import sv.edu.ues.fia.eisi.uesrunning.R;
 import sv.edu.ues.fia.eisi.uesrunning.databinding.FragmentGaleriaBinding;
@@ -30,9 +33,21 @@ public class GaleriaFragment extends Fragment {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private LinearLayout layoutImages;
 
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Toast.makeText(requireContext(), "Permisos Concedidos", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Permisos Denegados, las características están desabilitadas si se rechazan los permisos", Toast.LENGTH_LONG).show();
+                }
+            });
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        //Lanzador del permiso de Camara
+        requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_galeria, container, false);
 

@@ -1,6 +1,8 @@
 package sv.edu.ues.fia.eisi.uesrunning.ui.home;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -13,6 +15,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import sv.edu.ues.fia.eisi.uesrunning.R;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
@@ -30,9 +35,22 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     int currentProgress;
     private boolean sensorsEnabled = true;
 
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Toast.makeText(requireContext(), "Permisos Concedidos", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Permisos Denegados, las características están desabilitadas si se rechazan los permisos", Toast.LENGTH_LONG).show();
+                }
+            });
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        //Lanzador de permiso de actividad física
+        requestPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION);
+
         // Disparar el layout de home
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
