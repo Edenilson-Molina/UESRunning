@@ -6,12 +6,9 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,9 +16,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -30,13 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.view.GestureDetector.OnGestureListener;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.content.ContextCompat;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -47,7 +39,6 @@ import androidx.fragment.app.Fragment;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import sv.edu.ues.fia.eisi.uesrunning.R;
@@ -92,6 +83,13 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Lanzador de permiso de actividad física
         requestPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION);
+        requestPermissionLauncher.launch(Manifest.permission.VIBRATE);
+        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+        requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+        // Para notificaciones en api anteriores a 33
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_NOTIFICATION_POLICY);
+        }
 
         // Disparar el layout de home
         View view = inflater.inflate(R.layout.fragment_home, container, false);
