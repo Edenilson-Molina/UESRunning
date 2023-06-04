@@ -6,7 +6,9 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -31,6 +33,9 @@ import android.widget.TextView;
 import android.view.GestureDetector.OnGestureListener;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.ContextCompat;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -73,8 +78,21 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     ArrayList<String> speechResults;
 
 
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    Toast.makeText(requireContext(), "Permisos Concedidos", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(requireContext(), "Permisos Denegados, las características están desabilitadas si se rechazan los permisos", Toast.LENGTH_LONG).show();
+                }
+            });
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //Lanzador de permiso de actividad física
+        requestPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION);
+
         // Disparar el layout de home
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 

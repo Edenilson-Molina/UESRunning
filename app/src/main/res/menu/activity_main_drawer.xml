@@ -20,5 +20,9 @@
             android:id="@+id/nav_misdatos"
             android:icon="@drawable/ic_menu_misdatos"
             android:title="@string/menu_misdatos" />
+        <item
+            android:id="@+id/nav_map2"
+            android:icon="@drawable/ic_menu_misdatos"
+            android:title="@string/map" />
     </group>
 </menu>
