@@ -22,7 +22,7 @@
             android:title="@string/menu_misdatos" />
         <item
             android:id="@+id/nav_map2"
-            android:icon="@drawable/ic_menu_misdatos"
+            android:icon="@android:drawable/ic_dialog_map"
             android:title="@string/map" />
     </group>
 </menu>

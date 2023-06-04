@@ -4,6 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,6 +18,11 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -33,11 +42,24 @@ import sv.edu.ues.fia.eisi.uesrunning.R;
  * Use the {@link MapFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements SensorEventListener {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
     private MyLocationNewOverlay mLocationOverlay;
     private Polyline trackPolyline;
+    private SensorManager sensorManager;
+    private Sensor stepSensor;
+
+    // PARA LAS VISTAS
+    private CircularProgressBar progressBar;
+
+    private TextView contadortxt;
+
+    private Button bt;
+
+    int currentProgress;
+
+    private boolean sensorsEnabled = true;
 
     public MapFragment() {
         // Required empty public constructor
@@ -118,11 +140,37 @@ public class MapFragment extends Fragment {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         };
         requestPermissionsIfNecessary(permissions);
+
+        sensorManager = (SensorManager) requireContext().getSystemService(Context.SENSOR_SERVICE);
+        stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        progressBar = view.findViewById((R.id.progress_circular));
+        progressBar.setProgressMax(10000); // Pasos recomendados a diario
+        contadortxt = view.findViewById(R.id.step_counter3);
+        currentProgress = -1;
+        bt = view.findViewById(R.id.toggleButton);
+        bt.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                toggleSensors(v);
+            }
+        });
         // Inflate the layout for this fragment
         return view;
 
 
     }
+    public void toggleSensors(View view) {
+        if (sensorsEnabled) {
+            sensorManager.unregisterListener(this);
+            sensorsEnabled = false;
+            bt.setText("Activar");
+        } else {
+            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
+            sensorsEnabled = true;
+            currentProgress -= 1;
+            bt.setText("Desactivar");
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -175,8 +223,26 @@ public class MapFragment extends Fragment {
         }
     }
 
+    private void setProgress(int progress) {
+        progressBar.setProgress(progress);
+    }
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
+            float steps = event.values[0];
+            // Actualiza tu contador de pasos en la interfaz de usuario
+            // Actualiza el progreso
+            // Obtén el progreso actual de tus datos o cálculos
+            currentProgress += 1;
+            contadortxt.setText(String.valueOf(currentProgress));
+            setProgress(currentProgress);
 
-
+        }
+    }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        // Método requerido por la interfaz SensorEventListener,
+        // no necesitas implementarlo en este caso.
+    }
 
 
 }
