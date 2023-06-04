@@ -58,7 +58,6 @@ public class MapFragment extends Fragment implements SensorEventListener {
     private Button bt;
 
     int currentProgress;
-    double cambio;
 
     int redon;
 
