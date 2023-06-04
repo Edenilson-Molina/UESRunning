@@ -58,6 +58,9 @@ public class MapFragment extends Fragment implements SensorEventListener {
     private Button bt;
 
     int currentProgress;
+    double cambio;
+
+    int redon;
 
     private boolean sensorsEnabled = true;
 
@@ -232,12 +235,23 @@ public class MapFragment extends Fragment implements SensorEventListener {
             // Actualiza tu contador de pasos en la interfaz de usuario
             // Actualiza el progreso
             // Obtén el progreso actual de tus datos o cálculos
-            currentProgress += 1;
-            contadortxt.setText(String.valueOf(currentProgress));
-            setProgress(currentProgress);
 
+
+            currentProgress +=1;
+
+            if(currentProgress%4==0){
+                redon +=1;
+
+            }
+
+
+
+            contadortxt.setText(String.valueOf(redon));
+            setProgress(currentProgress);
         }
     }
+
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Método requerido por la interfaz SensorEventListener,
