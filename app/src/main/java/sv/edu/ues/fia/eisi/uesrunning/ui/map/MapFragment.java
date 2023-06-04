@@ -146,7 +146,7 @@ public class MapFragment extends Fragment implements SensorEventListener {
         sensorManager = (SensorManager) requireContext().getSystemService(Context.SENSOR_SERVICE);
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         progressBar = view.findViewById((R.id.progress_circular));
-        progressBar.setProgressMax(10000); // Pasos recomendados a diario
+        progressBar.setProgress(100000); // Pasos recomendados a diario
         contadortxt = view.findViewById(R.id.step_counter3);
         currentProgress = -1;
         bt = view.findViewById(R.id.toggleButton);
@@ -238,7 +238,7 @@ public class MapFragment extends Fragment implements SensorEventListener {
 
             currentProgress +=1;
 
-            if(currentProgress%4==0){
+            if(currentProgress%3==0){
                 redon +=1;
 
             }
