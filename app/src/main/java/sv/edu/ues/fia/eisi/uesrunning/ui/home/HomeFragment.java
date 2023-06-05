@@ -15,6 +15,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.speech.RecognizerIntent;
 import android.util.Log;
@@ -24,6 +26,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +56,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
     private SensorManager sensorManager;
     private Sensor stepSensor;
 
-    private CircularProgressBar progressBar;
+    //private CircularProgressBar progressBar;
 
     // PARA LOS GESTOS
     private GestureDetector gestureDetector;
@@ -68,6 +71,13 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
     ArrayList<String> speechResults;
 
+    // PARA CRONOMETRO
+    private TextView txtView;
+    private Button btnReset;
+    private Handler handler;
+    private boolean isRunning;
+    private long startTime;
+    private long elapsedTime;
 
     private ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -97,6 +107,8 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         // Inicializando variables
         sensorManager = (SensorManager) requireContext().getSystemService(Context.SENSOR_SERVICE);
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        //progressBar = view.findViewById((R.id.progress_circular));
+        //progressBar.setProgress(100000); // Pasos recomendados a diario
         contadortxt = view.findViewById(R.id.step_counter);
         currentProgress = 0;
 
@@ -105,10 +117,60 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         bt = view.findViewById(R.id.toggleButton);
         bt.setOnClickListener(this::toggleSensors);
 
+        // PARA MANEJAR EL CRONOMETRO
+        txtView = view.findViewById(R.id.txtView);
+        btnReset = view.findViewById(R.id.btn_reset);
+
+
+        btnReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetTimer();
+            }
+        });
+
+        handler = new Handler();
+
 
         return view;
     }
 
+    private void startTimer() {
+        startTime = SystemClock.elapsedRealtime() - elapsedTime;
+        handler.postDelayed(timerRunnable, 0);
+        btnReset.setEnabled(false);
+        isRunning = true;
+    }
+
+    private void stopTimer() {
+        handler.removeCallbacks(timerRunnable);
+        btnReset.setEnabled(true);
+        isRunning = false;
+    }
+
+    private void resetTimer() {
+        stopTimer();
+        elapsedTime = 0;
+        updateTimer();
+    }
+
+    private Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            elapsedTime = SystemClock.elapsedRealtime() - startTime;
+            updateTimer();
+            handler.postDelayed(this, 1000);
+        }
+    };
+
+    private void updateTimer() {
+        int hours = (int) (elapsedTime / 3600000);
+        int minutes = (int) ((elapsedTime / 60000) % 60);
+        int seconds = (int) ((elapsedTime / 1000) % 60);
+
+        String time = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        txtView.setText(time);
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -133,6 +195,8 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             }
 
 
+
+
         });
 
         // Establecer el listener de onTouch para el TextView
@@ -140,6 +204,8 @@ public class HomeFragment extends Fragment implements SensorEventListener {
             gestureDetector.onTouchEvent(event);
             return true;
         });
+
+
 
         contadortxt.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -183,7 +249,6 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         }
 
     }
-
 
     //private void setProgress(int progress) {
     //    progressBar.setProgress(progress);
@@ -258,6 +323,7 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 notificationManager.cancel(2);
             }
             bt.setText("Activar");
+            stopTimer();
         } else {
             sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
             sensorsEnabled = true;
@@ -267,16 +333,16 @@ public class HomeFragment extends Fragment implements SensorEventListener {
                 notificationManager.cancel(1);
             }
             bt.setText("Desactivar");
+            startTimer();
         }
     }
+
 
     public void onResume() {
         super.onResume();
         // Registra el listener del sensor
         //sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
-
-
 
     @Override
     public void onSensorChanged(SensorEvent event) {

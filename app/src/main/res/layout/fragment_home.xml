@@ -43,7 +43,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="10sp">
 
             <ProgressBar
                 android:id="@+id/progress_cronometro"
@@ -65,15 +66,25 @@
                 android:layout_alignBottom="@+id/progress_cronometro"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="42dp"
+                android:layout_marginStart="35dp"
                 android:layout_marginTop="79dp"
-                android:layout_marginEnd="43dp"
-                android:layout_marginBottom="80dp"
+                android:layout_marginEnd="35dp"
+                android:layout_marginBottom="79dp"
                 android:text="00:00:00"
                 android:textColor="@color/design_default_color_primary"
                 android:textSize="30sp" />
 
+
         </RelativeLayout>
+
+
+        <Button
+            android:id="@+id/btn_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="resetTimer"
+            android:text="Reset" />
+
 
         <Button
             android:id="@+id/toggleButton"
