@@ -15,7 +15,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.speech.RecognizerIntent;
@@ -26,7 +25,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,19 +32,15 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
-import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 import sv.edu.ues.fia.eisi.uesrunning.R;
-//import com.mikhaellopez.circularprogressbar.CircularProgressBar;
-//import sv.edu.ues.fia.eisi.uesrunning.databinding.FragmentHomeBinding;
+
 
 public class HomeFragment extends Fragment implements SensorEventListener {
 
@@ -91,14 +85,14 @@ public class HomeFragment extends Fragment implements SensorEventListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //Lanzador de permiso de actividad física
-        requestPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION);
-        requestPermissionLauncher.launch(Manifest.permission.VIBRATE);
-        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-        requestPermissionLauncher.launch(Manifest.permission.CAMERA);
-        // Para notificaciones en api anteriores a 33
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            requestPermissionLauncher.launch(Manifest.permission.ACCESS_NOTIFICATION_POLICY);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissionLauncher.launch(Manifest.permission.VIBRATE);
+            }
         }
 
         // Disparar el layout de home
@@ -259,82 +253,80 @@ public class HomeFragment extends Fragment implements SensorEventListener {
         context = requireContext();
         NotificationManager notificationManager = null;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1001);
-            }
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.VIBRATE}, 1002);
-            }
-        }
-
-        // Crea un canal de notificación
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "Canal 1";
-            String description = "Canal para notificaciones de contador iniciado";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel("channel_1", name, importance);
-            channel.setDescription(description);
-            channel.setVibrationPattern(new long[]{0, 250, 100, 250});
-            channel.enableVibration(true);
-
-            // Registra el canal en el sistema
-            notificationManager = context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-
-            name = "Canal 2";
-            description = "Canal para notificaciones de contador detenido";
-            importance = NotificationManager.IMPORTANCE_DEFAULT;
-            channel = new NotificationChannel("channel_2", name, importance);
-            channel.setDescription(description);
-            channel.setVibrationPattern(new long[]{0, 250, 100, 250});
-            channel.enableVibration(true);
-
-            // Registra el canal en el sistema
-            notificationManager = context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        // Crea un objeto NotificationCompat.Builder para construir la notificación
-        NotificationCompat.Builder builder1 = new NotificationCompat.Builder(context, "channel_1")
-                .setSmallIcon(R.drawable.icon_correr_notification)
-                .setContentTitle("Contador iniciado")
-                .setContentText("Empieza a correr para ver tu progreso")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setVibrate(new long[]{0, 250, 100, 250})
-                .setAutoCancel(true)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE);
-
-        // Crea un objeto NotificationCompat.Builder para construir la notificación
-        NotificationCompat.Builder builder2 = new NotificationCompat.Builder(context, "channel_2")
-                .setSmallIcon(R.drawable.icon_parar_notificaction)
-                .setContentTitle("Contador detenido")
-                .setContentText("Toma un descanso")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setVibrate(new long[]{0, 250, 100, 250})
-                .setAutoCancel(true)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE);
-
-        if (sensorsEnabled && bt.getText().equals("Desactivar")) {
-            sensorManager.unregisterListener(this);
-            sensorsEnabled = false;
-            if (notificationManager != null) {
-                notificationManager.notify(1, builder2.build());
-                notificationManager.cancel(2);
-            }
-            bt.setText("Activar");
-            stopTimer();
+        //Lanzador de permiso de actividad física
+        if(ContextCompat.checkSelfPermission(context, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+            requestPermissionLauncher.launch(Manifest.permission.ACTIVITY_RECOGNITION);
         } else {
-            sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
-            sensorsEnabled = true;
-            currentProgress -= 1;
-            if (notificationManager != null) {
-                notificationManager.notify(2, builder1.build());
-                notificationManager.cancel(1);
+            // Crea un canal de notificación
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                CharSequence name = "Canal 1";
+                String description = "Canal para notificaciones de contador iniciado";
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                NotificationChannel channel = new NotificationChannel("channel_1", name, importance);
+                channel.setDescription(description);
+                channel.setVibrationPattern(new long[]{0, 250, 100, 250});
+                channel.enableVibration(true);
+
+                // Registra el canal en el sistema
+                notificationManager = context.getSystemService(NotificationManager.class);
+                notificationManager.createNotificationChannel(channel);
+
+                name = "Canal 2";
+                description = "Canal para notificaciones de contador detenido";
+                importance = NotificationManager.IMPORTANCE_DEFAULT;
+                channel = new NotificationChannel("channel_2", name, importance);
+                channel.setDescription(description);
+                channel.setVibrationPattern(new long[]{0, 250, 100, 250});
+                channel.enableVibration(true);
+
+                // Registra el canal en el sistema
+                notificationManager = context.getSystemService(NotificationManager.class);
+                notificationManager.createNotificationChannel(channel);
             }
-            bt.setText("Desactivar");
-            startTimer();
+
+            // Crea un objeto NotificationCompat.Builder para construir la notificación
+            NotificationCompat.Builder builder1 = new NotificationCompat.Builder(context, "channel_1")
+                    .setSmallIcon(R.drawable.icon_correr_notification)
+                    .setContentTitle("Contador iniciado")
+                    .setContentText("Empieza a correr para ver tu progreso")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setVibrate(new long[]{0, 250, 100, 250})
+                    .setAutoCancel(true)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE);
+
+            // Crea un objeto NotificationCompat.Builder para construir la notificación
+            NotificationCompat.Builder builder2 = new NotificationCompat.Builder(context, "channel_2")
+                    .setSmallIcon(R.drawable.icon_parar_notificaction)
+                    .setContentTitle("Contador detenido")
+                    .setContentText("Toma un descanso")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setVibrate(new long[]{0, 250, 100, 250})
+                    .setAutoCancel(true)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE);
+
+            if (sensorsEnabled && bt.getText().equals("Desactivar")) {
+                sensorManager.unregisterListener(this);
+                sensorsEnabled = false;
+                if (notificationManager != null) {
+                    notificationManager.notify(1, builder2.build());
+                    notificationManager.cancel(2);
+                }
+                bt.setText("Activar");
+                stopTimer();
+            } else {
+                sensorManager.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
+                sensorsEnabled = true;
+                currentProgress -= 1;
+                if (notificationManager != null) {
+                    notificationManager.notify(2, builder1.build());
+                    notificationManager.cancel(1);
+                }
+                bt.setText("Desactivar");
+                startTimer();
+            }
         }
+
+
     }
 
 

@@ -15,9 +15,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +53,7 @@ public class GaleriaFragment extends Fragment {
 
     String currentPhotoPath;
 
+    View view;
     private ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
@@ -64,10 +67,17 @@ public class GaleriaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Lanzador del permiso de Camara
-        requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+        // Primero, verificar si el permiso de la cámara ya está otorgado
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            // Toodo bien
+            Log.d("TAG", "onCreateView: Permiso de camara concedido");
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
+        }
+
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_galeria, container, false);
+        view = inflater.inflate(R.layout.fragment_galeria, container, false);
 
         Button btnCapture = view.findViewById(R.id.boton_tomar_foto);
 
@@ -93,6 +103,8 @@ public class GaleriaFragment extends Fragment {
                 dispatchTakePictureIntent();
             }
         });
+
+
 
         return view;
     }
@@ -130,23 +142,22 @@ public class GaleriaFragment extends Fragment {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
+        // Verificar que podemos usar la cámara
         if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            // Create the File where the photo should go
+            // Creamos el archivo donde se guardará la foto
             File photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
-                // Error occurred while creating the File
+                // Errores aqui
             }
-            // Continue only if the File was successfully created
+            // Si no hubo problemas al crear el archivo
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(getContext(),
                         "com.example.android.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                actualizarGaleria();
             }
         }
     }
@@ -156,21 +167,22 @@ public class GaleriaFragment extends Fragment {
         super.onActivityResult( requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             Toast.makeText(getContext(), "Foto guardada con exito", Toast.LENGTH_SHORT).show();
+            actualizarGaleria();
         }
     }
 
     private File createImageFile() throws IOException {
 
-        // Create an image file name
+        // Crear un archivo de imagen
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
+                imageFileName,  /* prefijo */
+                ".jpg",         /* sufijo */
+                storageDir      /* directorio donde se guarda */
         );
-        // Save a file: path for use with ACTION_VIEW intents
+        // Obtenemos el path del archivo, por si queremos usarlo
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
