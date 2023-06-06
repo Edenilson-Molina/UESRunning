@@ -24,13 +24,14 @@ import androidx.appcompat.app.AlertDialog;
 import sv.edu.ues.fia.eisi.uesrunning.R;
 
 public class TemporizadorFragment extends Fragment {
+
+    private CountDownTimer countDownTimer; // Variable miembro para el CountDownTimer
     private Ringtone ringtone;
     private EditText txtSegundos;
     private EditText txtMinutos;
     private EditText txtHoras;
     private TextView tvCuentaAtras;
     private Button button;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,19 +44,22 @@ public class TemporizadorFragment extends Fragment {
 
         button = view.findViewById(R.id.iniciar);
         button.setOnClickListener(this::play);
+
         return view;
     }
 
     public void play(View view) {
-
-
+        txtHoras.setEnabled(false);
+        txtMinutos.setEnabled(false);
+        txtSegundos.setEnabled(false);
+        button.setEnabled(false);
         long tiempoSegundos = Long.parseLong(txtSegundos.getText().toString());
         long tiempoMilisegundos = tiempoSegundos * 1000;
         long seg = Long.parseLong(txtSegundos.getText().toString()) * 1000;
         long min = Long.parseLong(txtMinutos.getText().toString()) * 60 * 1000;
         long hor = Long.parseLong(txtHoras.getText().toString()) * 60 * 60 * 1000;
         tiempoMilisegundos = seg + min + hor;
-        if (tiempoSegundos == 0) {
+        if (tiempoSegundos == 0 && min==0 && hor ==00) {
             Toast.makeText(getActivity(), "Ingrese un tiempo mayor a 0", Toast.LENGTH_SHORT).show();
             return; // Salir del método sin iniciar el temporizador
         }else{
@@ -85,6 +89,11 @@ public class TemporizadorFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         ringtone.stop();
+                        tvCuentaAtras.setText(String.format("00:00:00"));
+                        txtHoras.setText(String.format("00"));
+                        txtMinutos.setText(String.format("00"));
+                        txtSegundos.setText(String.format("00"));
+                        button.setEnabled(true);
                     }
 
 
