@@ -94,6 +94,9 @@ public class TemporizadorFragment extends Fragment {
                         txtMinutos.setText(String.format("00"));
                         txtSegundos.setText(String.format("00"));
                         button.setEnabled(true);
+                        txtHoras.setEnabled(true);
+                        txtMinutos.setEnabled(true);
+                        txtSegundos.setEnabled(true);
                     }
 
 
