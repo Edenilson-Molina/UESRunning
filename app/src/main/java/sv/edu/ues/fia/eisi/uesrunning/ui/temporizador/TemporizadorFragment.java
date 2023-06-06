@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.media.RingtoneManager;
 import android.os.CountDownTimer;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,7 @@ import androidx.appcompat.app.AlertDialog;
 import sv.edu.ues.fia.eisi.uesrunning.R;
 
 public class TemporizadorFragment extends Fragment {
+    private Ringtone ringtone;
     private EditText txtSegundos;
     private EditText txtMinutos;
     private EditText txtHoras;
@@ -46,12 +48,17 @@ public class TemporizadorFragment extends Fragment {
 
     public void play(View view) {
 
+
         long tiempoSegundos = Long.parseLong(txtSegundos.getText().toString());
         long tiempoMilisegundos = tiempoSegundos * 1000;
         long seg = Long.parseLong(txtSegundos.getText().toString()) * 1000;
         long min = Long.parseLong(txtMinutos.getText().toString()) * 60 * 1000;
         long hor = Long.parseLong(txtHoras.getText().toString()) * 60 * 60 * 1000;
         tiempoMilisegundos = seg + min + hor;
+        if (tiempoSegundos == 0) {
+            Toast.makeText(getActivity(), "Ingrese un tiempo mayor a 0", Toast.LENGTH_SHORT).show();
+            return; // Salir del método sin iniciar el temporizador
+        }else{
         new CountDownTimer(tiempoMilisegundos, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -68,8 +75,8 @@ public class TemporizadorFragment extends Fragment {
             public void onFinish() {
 
                 Uri notificacion = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-                Ringtone r = RingtoneManager.getRingtone(getActivity(), notificacion);
-                r.play();
+                ringtone= RingtoneManager.getRingtone(getActivity(), notificacion);
+                ringtone.play();
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Tiempo Terminado");
                 builder.setMessage("El tiempo ha terminado");
@@ -77,11 +84,16 @@ public class TemporizadorFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        ringtone.stop();
                     }
+
+
                 });
+
                 builder.show();
             }
         }.start();
+        }
     }
     @Override
     public void onDestroyView() {
