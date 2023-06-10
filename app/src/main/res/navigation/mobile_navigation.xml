@@ -12,12 +12,6 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="sv.edu.ues.fia.eisi.uesrunning.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
-
-    <fragment
         android:id="@+id/nav_temporizador"
         android:name="sv.edu.ues.fia.eisi.uesrunning.ui.temporizador.TemporizadorFragment"
         android:label="@string/menu_temporizador"

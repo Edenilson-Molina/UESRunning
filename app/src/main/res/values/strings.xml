@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">UESRunning</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">UES Running</string>
+    <string name="nav_header_subtitle">grupo3_pdm@ues.edu.sv</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
